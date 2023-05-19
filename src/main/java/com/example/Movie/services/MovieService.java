@@ -1,9 +1,10 @@
 package com.example.Movie.services;
 
 import java.util.ArrayList;
-import java.util.Optional;
-
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import com.example.Movie.models.MovieModel;
@@ -19,19 +20,28 @@ public class MovieService {
         return movieRepository.save(movieService);
     }
 
-    public Optional<MovieModel> obtenerPorId(Long id){
+    public Optional<MovieModel> getById(Long id) {
         return movieRepository.findById(id);
     }
-        
-    public ArrayList<MovieModel> getPriority(Integer prioridad) {
-        return movieRepository.findByPrioridad(prioridad);
+
+    public MovieModel updateModel(Long id, MovieModel movieModel) {
+        MovieModel movie = movieRepository.findById(id).orElse(null);
+
+        if (movie == null) {
+            return null;
+        }
+        movie.setTitle(movieModel.getTitle());
+        movie.setSynopsis(movieModel.getSynopsis());
+        movie.setYear(movieModel.getYear());
+
+        return movieRepository.save(movie);
     }
 
     public boolean deleteMovie(Long id) {
-        try{
+        try {
             movieRepository.deleteById(id);
             return true;
-        }catch(Exception err){
+        } catch (Exception err) {
             return false;
         }
     }
